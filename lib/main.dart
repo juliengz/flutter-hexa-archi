@@ -20,7 +20,7 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => di.sl<SigninNotifier>(),
-        )
+        ),
       ],
       child: const MyApp(),
     ),

@@ -13,15 +13,12 @@ class SigninNotifier with ChangeNotifier {
   Map<String, dynamic>? tokens;
   String? error;
 
-  Future<void> signin() async {
-    // show loading
+  Future<void> signin(BuildContext context) async {
     isLoading = true;
     notifyListeners();
 
-    // Fetch the list
     final result = await _signinUseCase('admin', 'admin');
 
-    // Handle success or error
     result.fold(
       (e) {
         error = "fail";
@@ -30,10 +27,10 @@ class SigninNotifier with ChangeNotifier {
       (data) {
         tokens = data;
         isLoading = false;
+        Navigator.pushReplacementNamed(context, '/');
       },
     );
 
-    // notify UI
     notifyListeners();
   }
 }

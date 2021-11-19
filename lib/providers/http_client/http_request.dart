@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter_clean_archi/providers/http_client/http_client.dart';
 
 class HttpRequest {
-  final String _baseUrl = "http://10.0.2.2:8000/";
-  // final String _baseUrl = "http://192.168.1.46:8000/";
+  // final String _baseUrl = "http://10.0.2.2:8000/";
+  final String _baseUrl = "http://192.168.1.90:8000/";
   final String path;
   final Dio _client = createHttpClient();
   final Map? data;
