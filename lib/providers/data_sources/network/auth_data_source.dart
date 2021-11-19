@@ -1,5 +1,5 @@
 import 'package:flutter_clean_archi/core/auth/domain/entities/user.dart';
-import 'package:flutter_clean_archi/core/auth/exceptions/bad_credential_exception.dart';
+import 'package:flutter_clean_archi/core/auth/domain/exceptions/bad_credential_exception.dart';
 import 'package:flutter_clean_archi/providers/http_client/http_request.dart';
 
 class AuthDataSource {
