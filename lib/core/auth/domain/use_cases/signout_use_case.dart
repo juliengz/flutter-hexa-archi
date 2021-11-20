@@ -1,7 +1,7 @@
 import 'package:flutter_clean_archi/core/auth/domain/interfaces/auth_manager_interface.dart';
 
 class SignoutUseCase {
-  final AuthenticationManagerInterface authenticationManager;
+  final AuthManagerInterface authenticationManager;
 
   SignoutUseCase({required this.authenticationManager});
 

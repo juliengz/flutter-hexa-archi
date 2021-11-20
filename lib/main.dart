@@ -6,11 +6,13 @@ import 'package:flutter_clean_archi/ui/auth/views/signin_page.dart';
 import 'package:flutter_clean_archi/ui/home/notifiers/home_notifier.dart';
 import 'package:flutter_clean_archi/ui/auth/notifiers/signin_notifier.dart';
 import 'package:flutter_clean_archi/ui/home/pages/home_page.dart';
+import 'package:get_storage/get_storage.dart';
 
 import 'package:provider/provider.dart';
 
 void main() async {
   await di.init();
+  await GetStorage.init();
 
   runApp(
     MultiProvider(
