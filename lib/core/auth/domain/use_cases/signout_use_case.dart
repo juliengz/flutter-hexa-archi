@@ -1,11 +1,13 @@
-import 'package:flutter_clean_archi/core/auth/domain/interfaces/auth_manager_interface.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_archi/core/auth/domain/errors/errors.dart';
+import 'package:flutter_clean_archi/core/auth/domain/interfaces/auth_backend_gateway.dart';
 
 class SignoutUseCase {
-  final AuthManagerInterface authManager;
+  final AuthBackendGateway authBackendGateway;
 
-  SignoutUseCase({required this.authManager});
+  SignoutUseCase({required this.authBackendGateway});
 
-  Future<void> call() async {
-    return await authManager.signout();
+  Future<Either<AuthError, bool>> call() async {
+    return await authBackendGateway.signout();
   }
 }

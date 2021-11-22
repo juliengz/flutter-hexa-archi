@@ -1,26 +1,53 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_clean_archi/core/auth/domain/errors/failure.dart';
-import 'package:flutter_clean_archi/core/auth/domain/interfaces/auth_manager_interface.dart';
+import 'package:flutter_clean_archi/core/auth/domain/entities/user.dart';
+import 'package:flutter_clean_archi/core/auth/domain/errors/errors.dart';
+import 'package:flutter_clean_archi/core/auth/domain/use_cases/is_already_signin_use_case.dart';
 import 'package:flutter_clean_archi/core/auth/domain/use_cases/signin_use_case.dart';
 import 'package:flutter_clean_archi/core/auth/domain/use_cases/signout_use_case.dart';
 
 class AuthNotifier with ChangeNotifier {
-  final AuthManagerInterface authManager;
   final SigninUseCase signinUseCase;
   final SignoutUseCase signoutUseCase;
+  final IsAlreadySigninUseCase isAlreadySigninUseCase;
 
-  AuthNotifier({
-    required this.authManager,
-    required this.signinUseCase,
-    required this.signoutUseCase,
-  });
-
+  User? _currentUser;
   bool isLoading = false;
   String? error;
 
+  AuthNotifier({
+    required this.signinUseCase,
+    required this.signoutUseCase,
+    required this.isAlreadySigninUseCase,
+  });
+
+  User? get currentUser => _currentUser;
+
+  // Future<void> isAuthenticated() async {
+  //   final result = await isAlreadySigninUseCase();
+
+  //   result.fold(
+  //     (failure) {
+  //       error = (failure is BadCredentialError)
+  //           ? "Bad credentials"
+  //           : "Something's wrong";
+  //       isLoading = false;
+  //     },
+  //     (user) {
+  //       error = null;
+  //       isLoading = false;
+  //       _currentUser = user;
+
+  //       print(currentUser);
+  //     },
+  //   );
+  // }
+
   Future<void> signin(
-      BuildContext context, String login, String password) async {
+    BuildContext context,
+    String login,
+    String password,
+  ) async {
     isLoading = true;
     notifyListeners();
 
@@ -28,14 +55,15 @@ class AuthNotifier with ChangeNotifier {
 
     result.fold(
       (failure) {
-        error = (failure is BadCredentialFailure)
+        error = (failure is BadCredentialError)
             ? "Bad credentials"
             : "Something's wrong";
         isLoading = false;
       },
-      (data) {
+      (user) {
         error = null;
         isLoading = false;
+        _currentUser = user;
         Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
       },
     );
@@ -48,11 +76,11 @@ class AuthNotifier with ChangeNotifier {
     notifyListeners();
 
     await signoutUseCase();
+    _currentUser = null;
 
     isLoading = false;
+    notifyListeners();
 
     Navigator.pushNamedAndRemoveUntil(context, '/signin', (route) => false);
-
-    notifyListeners();
   }
 }

@@ -1,27 +1,30 @@
 // ignore_for_file: unused_local_variable
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_archi/core/auth/domain/errors/failure.dart';
+import 'package:flutter_clean_archi/core/auth/domain/errors/errors.dart';
 import 'package:flutter_clean_archi/core/auth/domain/entities/user.dart';
-import 'package:flutter_clean_archi/core/auth/domain/interfaces/auth_repository_interface.dart';
+import 'package:flutter_clean_archi/core/auth/domain/interfaces/auth_backend_gateway.dart';
 import 'package:flutter_clean_archi/core/auth/domain/use_cases/signin_use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-class StubAuthRepository implements AuthRepositoryInterface {
+User fakeUser = User(id: 1, name: 'admin');
+
+class StubAuthBackendGateway implements AuthBackendGateway {
   @override
-  Future<Either<Failure, User>> getUser() {
+  Future<Either<AuthError, User>> signin(String login, String password) async {
+    return (login == "admin" && password == "admin")
+        ? Right(fakeUser)
+        : Left(BadCredentialError());
+  }
+
+  @override
+  Future<Either<AuthError, User>> me() {
     throw UnimplementedError();
   }
 
   @override
-  Future<Either<Failure, dynamic>> signin(String login, String password) async {
-    final Map tokens = {
-      "accessToken": "123456789",
-      "refreshToken": "123456789",
-    };
-    return (login == "admin" && password == "admin")
-        ? Right(tokens)
-        : Left(BadCredentialFailure());
+  Future<Either<AuthError, bool>> signout() {
+    throw UnimplementedError();
   }
 }
 
@@ -29,30 +32,26 @@ void main() {
   SigninUseCase? usecase;
 
   setUp(() {
-    usecase = SigninUseCase(authRepository: StubAuthRepository());
+    usecase = SigninUseCase(authBackendGateway: StubAuthBackendGateway());
   });
 
-  final Map tokens = {
-    "accessToken": "123456789",
-    "refreshToken": "123456789",
-  };
-
-  test('should return tokens from repository', () async {
-    final Either<Failure, dynamic> signinSuccessResult =
+  test('Should return user from auth backend gateway', () async {
+    final Either<AuthError, User> signinSuccessResult =
         await usecase!.call('admin', 'admin');
-    final Either<Failure, dynamic> signinFailureResult =
-        await usecase!.call('wronglogin', 'wrongpassword');
 
     signinSuccessResult.fold(
-      (left) => fail('test failed'),
-      (right) {
-        expect(right, equals(tokens));
-      },
+      (error) => fail('test failed'),
+      (user) => expect(user, equals(fakeUser)),
     );
+  });
+
+  test('Should return error from auth backend gateway', () async {
+    final Either<AuthError, User> signinFailureResult =
+        await usecase!.call('wronglogin', 'wrongpassword');
 
     signinFailureResult.fold(
-      (left) => {expect(true, left is Failure)},
-      (right) => fail('test failed'),
+      (error) => {expect(true, error is AuthError)},
+      (user) => fail('test failed'),
     );
   });
 }

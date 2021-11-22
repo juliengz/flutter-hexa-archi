@@ -1,1 +1,0 @@
-class BadCredentialException implements Exception {}
