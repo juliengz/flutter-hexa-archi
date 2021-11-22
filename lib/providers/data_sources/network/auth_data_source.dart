@@ -1,5 +1,6 @@
 import 'package:flutter_clean_archi/core/auth/domain/entities/user.dart';
-import 'package:flutter_clean_archi/core/auth/domain/exceptions/bad_credential_exception.dart';
+import 'package:flutter_clean_archi/providers/data_sources/exceptions/bad_credential_exception.dart';
+import 'package:flutter_clean_archi/providers/data_sources/exceptions/forbidden_exception.dart';
 import 'package:flutter_clean_archi/providers/http_client/http_request.dart';
 
 class AuthDataSource {
@@ -17,10 +18,13 @@ class AuthDataSource {
         if (error.response?.statusCode == 401) {
           throw BadCredentialException();
         }
+        if (error.response?.statusCode == 403) {
+          throw ForbiddenException();
+        }
       },
     );
 
-    return response;
+    return (response != Null) ? response : Null;
   }
 
   Future<User> getUser() async {
@@ -31,6 +35,9 @@ class AuthDataSource {
       onError: (error) {
         if (error.response?.statusCode == 401) {
           throw BadCredentialException();
+        }
+        if (error.response?.statusCode == 403) {
+          throw ForbiddenException();
         }
       },
     );

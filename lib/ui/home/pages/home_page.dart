@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_clean_archi/ui/auth/notifiers/auth_notifier.dart';
 import 'package:flutter_clean_archi/ui/home/notifiers/home_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -22,15 +23,17 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   key: const Key('increment_floatingActionButton'),
+      floatingActionButton: FloatingActionButton(
+        key: const Key('signout'),
 
-      //   /// Calls `context.read` instead of `context.watch` so that it does not rebuild
-      //   /// when [Counter] changes.
-      //   onPressed: () => context.read<HomeNotifier>().increment(),
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ),
+        /// Calls `context.read` instead of `context.watch` so that it does not rebuild
+        /// when [Counter] changes.
+        onPressed: () {
+          context.read<AuthNotifier>().signout(context);
+        },
+        tooltip: 'Signout',
+        child: const Icon(Icons.logout),
+      ),
     );
   }
 

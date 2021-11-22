@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 class JwtAuthManager implements AuthManagerInterface {
   final AuthRepositoryInterface authRepository;
   final box = GetStorage();
+  User? currentUser;
 
   JwtAuthManager({required this.authRepository});
 
@@ -31,7 +32,7 @@ class JwtAuthManager implements AuthManagerInterface {
             fail = failure;
           },
           (user) async {
-            await box.write('user', user);
+            currentUser = user;
           },
         );
       },
@@ -52,7 +53,7 @@ class JwtAuthManager implements AuthManagerInterface {
 
   @override
   bool isAuthenticated() {
-    return false;
+    return currentUser != null;
   }
 
   @override
@@ -60,9 +61,16 @@ class JwtAuthManager implements AuthManagerInterface {
     String? accessToken = box.read('accessToken');
 
     if (accessToken != null) {
-      try {} catch (e) {
-        await signout();
-      }
+      Either<Failure, User> userResponse = await authRepository.getUser();
+      userResponse.fold(
+        (failure) async {
+          print('handleAuthenticationState; user not retrived');
+          await signout();
+        },
+        (user) async {
+          currentUser = user;
+        },
+      );
 
       //TODO: handle token refresh
     }

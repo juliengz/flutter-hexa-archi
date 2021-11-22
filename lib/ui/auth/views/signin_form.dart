@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_clean_archi/ui/auth/notifiers/signin_notifier.dart';
+import 'package:flutter_clean_archi/ui/auth/notifiers/auth_notifier.dart';
 import 'package:provider/provider.dart';
 
 class SigninForm extends StatefulWidget {
@@ -24,8 +24,8 @@ class _SigninFormState extends State<SigninForm> {
 
   @override
   Widget build(BuildContext context) {
-    final error = context.select((SigninNotifier n) => n.error);
-    final signin = context.select((SigninNotifier n) => n.signin);
+    final error = context.select((AuthNotifier n) => n.error);
+    final signin = context.select((AuthNotifier n) => n.signin);
 
     return Form(
       key: _formKey,

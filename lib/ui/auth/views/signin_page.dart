@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_clean_archi/ui/auth/notifiers/signin_notifier.dart';
+import 'package:flutter_clean_archi/ui/auth/notifiers/auth_notifier.dart';
 import 'package:flutter_clean_archi/ui/auth/views/signin_form.dart';
 import 'package:provider/provider.dart';
 
@@ -9,7 +9,7 @@ class SigninPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = context.select((SigninNotifier n) => n.isLoading);
+    final isLoading = context.select((AuthNotifier n) => n.isLoading);
 
     return Scaffold(
       body: SingleChildScrollView(
